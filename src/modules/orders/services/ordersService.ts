@@ -3,7 +3,7 @@ import type { Order, CreateOrderDto } from "@/types/api";
 
 export const ordersService = {
   getAll: (filter?: { status?: string; userId?: string }) =>
-    apiClient.get<Order[]>("/orders", filter as any),
+    apiClient.get<Order[]>("/orders", filter),
   getById: (id: string) => apiClient.get<Order>(`/orders/${id}`),
   getByUser: (userId: string) => apiClient.get<Order[]>(`/orders/user/${userId}`),
   create: (data: CreateOrderDto) => apiClient.post<Order>("/orders", data),

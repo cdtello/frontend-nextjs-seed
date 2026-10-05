@@ -3,16 +3,17 @@ import { useEffect, useState } from "react";
 import { ordersService } from "@/modules/orders/services/ordersService";
 import { productsService } from "@/modules/products/services/productsService";
 import { usersService } from "@/modules/users/services/usersService";
+import type { Order, Product, User, OrderItem } from "@/types/api";
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [filter, setFilter] = useState({ status: "", userId: "" });
   const [form, setForm] = useState({ userId: "1000000001", productId: "", quantity: 1 });
 
   async function load() {
-    const f: any = {};
+    const f: Record<string, string> = {};
     if (filter.status) f.status = filter.status;
     if (filter.userId) f.userId = filter.userId;
     const data = await ordersService.getAll(f);
@@ -26,7 +27,8 @@ export default function OrdersPage() {
       if (prods[0]) setForm(s=>({ ...s, productId: prods[0].id }));
     }
   }
-  useEffect(() => { load(); loadRefs(); }, []);
+  // eslint-disable-next-line
+  useEffect(() => { void load(); void loadRefs(); }, []);
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
@@ -67,7 +69,7 @@ export default function OrdersPage() {
               <span className={`text-xs px-2 py-1 rounded-full font-bold ${o.status==='PENDING'?'bg-amber-100 text-amber-700': o.status==='PAID'?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-600'}`}>{o.status}</span>
             </div>
             <div className="text-sm mt-1">User: <b>{o.user?.name || o.userId}</b> • Total: <b>${o.total}</b></div>
-            <div className="text-xs text-slate-600 mt-1">{o.items?.map((it:any)=> `${it.product?.name || it.productId} x${it.quantity} @${it.unitPrice}`).join(' • ')}</div>
+            <div className="text-xs text-slate-600 mt-1">{o.items?.map((it: OrderItem)=> `${it.product?.name || it.productId} x${it.quantity} @${it.unitPrice}`).join(' • ')}</div>
             <div className="flex gap-2 mt-3">
               <button onClick={async()=>{ await ordersService.updateStatus(o.id, 'PAID'); await load(); }} className="text-xs px-3 py-1 rounded-full bg-emerald-600 text-white">Marcar PAID</button>
               <button onClick={async()=>{ await ordersService.cancel(o.id); await load(); }} className="text-xs px-3 py-1 rounded-full bg-amber-600 text-white">Cancelar</button>

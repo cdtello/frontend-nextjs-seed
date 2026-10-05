@@ -8,9 +8,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export class ApiError extends Error {
   public status: number;
-  public data: any;
-  constructor(status: number, data: any) {
-    const msg = Array.isArray(data?.message) ? data.message.join(", ") : data?.message || `Error ${status}`;
+  public data: unknown;
+  constructor(status: number, data: unknown) {
+    const msg =
+      typeof data === "object" && data !== null && "message" in data
+        ? Array.isArray((data as { message: unknown }).message)
+          ? ((data as { message: string[] }).message).join(", ")
+          : String((data as { message: unknown }).message)
+        : `Error ${status}`;
     super(msg);
     this.status = status;
     this.data = data;

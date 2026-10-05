@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -12,13 +13,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full bg-gradient-to-br from-indigo-50 via-white to-purple-50 text-slate-900 antialiased">
         <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <a href="/" className="font-bold tracking-tight">
+            <Link href="/" className="font-bold tracking-tight">
               Frontend <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Next.js Seed</span>
-            </a>
+            </Link>
             <nav className="flex gap-2 text-sm">
-              <a href="/users" className="px-3 py-1.5 rounded-full bg-white border hover:bg-slate-50">Users</a>
-              <a href="/products" className="px-3 py-1.5 rounded-full bg-white border hover:bg-slate-50">Products</a>
-              <a href="/orders" className="px-3 py-1.5 rounded-full bg-white border hover:bg-slate-50">Orders</a>
+              <Link href="/users" className="px-3 py-1.5 rounded-full bg-white border hover:bg-slate-50">Users</Link>
+              <Link href="/products" className="px-3 py-1.5 rounded-full bg-white border hover:bg-slate-50">Products</Link>
+              <Link href="/orders" className="px-3 py-1.5 rounded-full bg-white border hover:bg-slate-50">Orders</Link>
               <a href="https://github.com/cdtello/backend-nestjs-seed" target="_blank" className="px-3 py-1.5 rounded-full bg-slate-900 text-white">Backend</a>
             </nav>
           </div>

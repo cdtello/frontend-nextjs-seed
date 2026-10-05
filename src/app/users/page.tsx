@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usersService } from "@/modules/users/services/usersService";
+import type { User } from "@/types/api";
 
 /**
  * Página Users — CRUD didáctico simple con fetch
  * Usa usersApi.* que hace fetch a NEXT_PUBLIC_API_URL
  */
 export default function UsersPage() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [form, setForm] = useState({ id: "", name: "", email: "", age: 20, phone: "" });
@@ -18,13 +19,14 @@ export default function UsersPage() {
       setErr(null);
       const data = await usersService.getAll();
       setUsers(data);
-    } catch (e: any) {
-      setErr(e.message);
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
   }
-  useEffect(() => { load(); }, []);
+  // eslint-disable-next-line
+  useEffect(() => { void load(); }, []);
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
@@ -32,7 +34,9 @@ export default function UsersPage() {
       await usersService.create({ ...form, age: Number(form.age) });
       setForm({ id: "", name: "", email: "", age: 20, phone: "" });
       await load();
-    } catch (e: any) { alert(e.message); }
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : String(e));
+    }
   }
 
   return (

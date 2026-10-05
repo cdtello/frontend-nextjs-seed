@@ -1,21 +1,23 @@
 "use client";
 import { useEffect, useState } from "react";
 import { productsService } from "@/modules/products/services/productsService";
+import type { Product } from "@/types/api";
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [filter, setFilter] = useState({ name: "", minPrice: "", maxPrice: "" });
   const [form, setForm] = useState({ name: "", description: "", price: 99, stock: 10 });
 
   async function load() {
-    const f: any = {};
+    const f: Record<string, string | number> = {};
     if (filter.name) f.name = filter.name;
     if (filter.minPrice) f.minPrice = Number(filter.minPrice);
     if (filter.maxPrice) f.maxPrice = Number(filter.maxPrice);
     const data = await productsService.getAll(f);
     setProducts(data);
   }
-  useEffect(() => { load(); }, []);
+  // eslint-disable-next-line
+  useEffect(() => { void load(); }, []);
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
