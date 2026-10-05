@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Nav from "@/components/Nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,14 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <input placeholder="Buscar productos, marcas..." className="w-full pl-9 pr-4 py-2 rounded-full bg-slate-100 border border-transparent focus:bg-white focus:border-slate-200 focus:outline-none text-sm" />
               </div>
             </div>
-            <nav className="flex items-center gap-1.5">
-              <Link href="/users" className="px-4 py-2 rounded-full bg-white border border-black/10 text-sm font-medium hover:bg-slate-50">Clientes</Link>
-              <Link href="/products" className="px-4 py-2 rounded-full bg-white border border-black/10 text-sm font-medium hover:bg-slate-50">Tienda</Link>
-              <Link href="/orders" className="relative px-4 py-2 rounded-full bg-slate-900 text-white text-sm font-medium hover:bg-black">
-                Pedidos
-                <span className="ml-2 inline-flex w-5 h-5 rounded-full bg-white text-slate-900 text-xs items-center justify-center font-bold">3</span>
-              </Link>
-            </nav>
+            <Nav />
           </div>
         </header>
         <main className="max-w-7xl mx-auto w-full px-4 md:px-6 py-8">{children}</main>
