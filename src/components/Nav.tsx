@@ -28,13 +28,6 @@ export default function Nav() {
           </Link>
         );
       })}
-      <a
-        href="https://github.com/cdtello/backend-nestjs-seed"
-        target="_blank"
-        className="hidden md:inline-flex px-4 py-2 rounded-full bg-white border border-black/10 text-sm font-medium hover:bg-slate-50"
-      >
-        Backend
-      </a>
     </nav>
   );
 }
