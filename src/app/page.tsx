@@ -1,39 +1,58 @@
-import { API_URL } from "@/lib/api";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="space-y-6">
-      <div className="rounded-[24px] bg-white border shadow-sm p-8">
-        <div className="inline-flex px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-bold tracking-widest uppercase">Frontend Next.js Seed • Tailwind</div>
-        <h1 className="text-3xl font-bold tracking-tight mt-3">Seed conectado a <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">backend NestJS</span></h1>
-        <p className="text-slate-600 mt-2">Next 16 App Router + TypeScript + Tailwind. Consume <span className="font-mono bg-slate-100 border px-2 py-1 rounded text-sm">{API_URL}</span> (ver <span className="font-mono bg-slate-100 border px-2 py-1 rounded">.env → NEXT_PUBLIC_API_URL</span>)</p>
-        <div className="flex flex-wrap gap-3 mt-6">
-          <a href="/users" className="px-5 py-2.5 rounded-full bg-slate-900 text-white font-semibold">Users CRUD →</a>
-          <a href="/products" className="px-5 py-2.5 rounded-full bg-white border font-medium">Products + filtros</a>
-          <a href="/orders" className="px-5 py-2.5 rounded-full bg-white border font-medium">Orders tienda</a>
+    <div className="space-y-8">
+      {/* Hero - Apple glass */}
+      <div className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white p-8 md:p-12">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-br from-blue-500 to-violet-600 rounded-full blur-[80px] opacity-30" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-br from-cyan-400 to-emerald-600 rounded-full blur-[80px] opacity-20" />
+        <div className="relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-xs font-semibold tracking-widest uppercase backdrop-blur">Nuevo • Seed 2025</div>
+          <h1 className="text-3xl md:text-5xl font-semibold tracking-tight mt-4 leading-[0.95]">Tu tienda.<br /><span className="font-light bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">Lista para vender.</span></h1>
+          <p className="text-white/70 mt-4 max-w-2xl">Frontend Next.js + Tailwind Glass conectado a tu backend NestJS. Mismos módulos que en clase: Clientes, Productos y Pedidos con filtros y transacciones.</p>
+          <div className="flex flex-wrap gap-3 mt-8">
+            <Link href="/products" className="px-6 py-3 rounded-full bg-white text-slate-900 font-semibold hover:bg-slate-100 transition">Explorar tienda →</Link>
+            <Link href="/orders" className="px-6 py-3 rounded-full bg-white/10 border border-white/20 backdrop-blur text-white font-medium hover:bg-white/15">Ver pedidos</Link>
+            <span className="inline-flex items-center px-4 py-3 rounded-full bg-white/10 border border-white/10 text-xs font-mono">API {process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}</span>
+          </div>
         </div>
       </div>
 
+      {/* Categorías como tienda real */}
       <div className="grid md:grid-cols-3 gap-4">
-        <div className="rounded-2xl bg-white border p-5">
-          <div className="text-xs font-bold tracking-widest uppercase text-slate-500">Users</div>
-          <div className="font-mono text-sm mt-2">GET /users</div>
-          <div className="text-xs text-slate-500 mt-1">5 requests • soft delete</div>
-        </div>
-        <div className="rounded-2xl bg-white border p-5">
-          <div className="text-xs font-bold tracking-widest uppercase text-slate-500">Products</div>
-          <div className="font-mono text-sm mt-2">GET /products?name=whey</div>
-          <div className="text-xs text-slate-500 mt-1">8 requests • Like/Between</div>
-        </div>
-        <div className="rounded-2xl bg-white border p-5">
-          <div className="text-xs font-bold tracking-widest uppercase text-slate-500">Orders</div>
-          <div className="font-mono text-sm mt-2">POST /orders</div>
-          <div className="text-xs text-slate-500 mt-1">11 requests • OrderItem</div>
-        </div>
+        <Link href="/users" className="group relative overflow-hidden rounded-[24px] bg-white border p-6 hover:shadow-lg transition">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full blur-2xl -mr-12 -mt-12 group-hover:scale-110 transition" />
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">👥</div>
+            <h3 className="font-semibold mt-3">Clientes</h3>
+            <p className="text-sm text-slate-500">Gestiona tus clientes • soft delete</p>
+            <span className="inline-flex mt-3 text-sm font-medium text-blue-600">Entrar →</span>
+          </div>
+        </Link>
+        <Link href="/products" className="group relative overflow-hidden rounded-[24px] bg-white border p-6 hover:shadow-lg transition">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full blur-2xl -mr-12 -mt-12 group-hover:scale-110 transition" />
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center">🛍️</div>
+            <h3 className="font-semibold mt-3">Tienda</h3>
+            <p className="text-sm text-slate-500">Catálogo con filtros Like/Between</p>
+            <span className="inline-flex mt-3 text-sm font-medium text-emerald-600">Comprar →</span>
+          </div>
+        </Link>
+        <Link href="/orders" className="group relative overflow-hidden rounded-[24px] bg-white border p-6 hover:shadow-lg transition">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-100 to-indigo-100 rounded-full blur-2xl -mr-12 -mt-12 group-hover:scale-110 transition" />
+          <div className="relative">
+            <div className="w-10 h-10 rounded-xl bg-violet-600 text-white flex items-center justify-center">🧾</div>
+            <h3 className="font-semibold mt-3">Pedidos</h3>
+            <p className="text-sm text-slate-500">Transacción con stock y filtros</p>
+            <span className="inline-flex mt-3 text-sm font-medium text-violet-600">Ver pedidos →</span>
+          </div>
+        </Link>
       </div>
 
-      <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-sm">
-        <b>¿Backend local?</b> Asegúrate de tener <span className="font-mono bg-white border px-2 py-1 rounded">backend-nestjs-seed → npm run start:dev</span> en <span className="font-mono bg-white border px-2 py-1 rounded">{API_URL}</span> y que <span className="font-mono bg-white border px-2 py-1 rounded">NEXT_PUBLIC_API_URL</span> en <span className="font-mono bg-white border px-2 py-1 rounded">.env</span> apunte ahí. Para Vercel, cambia a tu EC2/RDS.
+      <div className="rounded-2xl bg-white border p-4 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+        <span className="text-slate-600">¿Backend local? <span className="font-mono bg-slate-100 border px-2 py-1 rounded">NEXT_PUBLIC_API_URL=http://localhost:3000</span></span>
+        <span className="text-xs px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700">Glass • Tailwind • Listo para Vercel</span>
       </div>
     </div>
   );
