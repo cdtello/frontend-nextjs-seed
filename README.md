@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend Next.js Seed — Tailwind
 
-## Getting Started
+Seed Next.js 16 App Router + TypeScript + Tailwind, espejo del `backend-nestjs-seed`. Consume el backend NestJS vía `NEXT_PUBLIC_API_URL`.
 
-First, run the development server:
+> **Env local:** `NEXT_PUBLIC_API_URL=http://localhost:3000` (ver `.env.example`). Para Vercel cambia a tu EC2/RDS o backend desplegado.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Stack
+
+- Next.js 16 App Router + TypeScript
+- Tailwind CSS 4
+- `fetch` nativo (sin librerías raras) — didáctico
+
+## Estructura
+
+```
+src/app/
+  layout.tsx              # header glass + nav Users/Products/Orders
+  page.tsx                # home con links y API_URL
+  users/page.tsx          # CRUD Users (usa lib/api.ts)
+  products/page.tsx       # CRUD + filtros ?name, ?minPrice
+  orders/page.tsx         # tienda con relaciones + filtros ?status&userId
+src/lib/api.ts            # fetch wrappers con API_URL + params
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Env
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp .env.example .env
+# .env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+En Vercel: Project → Settings → Environment Variables → `NEXT_PUBLIC_API_URL=https://tu-backend.com`
 
-## Learn More
+## Desarrollo
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev        # http://localhost:3000 (frontend)
+# en otra terminal, backend
+cd ../backend-nestjs-seed && npm run start:dev # http://localhost:3000 (backend) → si coinciden puertos, cambia frontend a 3001: PORT=3001 npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Asegúrate de tener el backend corriendo en `NEXT_PUBLIC_API_URL`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Páginas
 
-## Deploy on Vercel
+- `/` — home con links
+- `/users` — crear/listar/desactivar
+- `/products` — crear/listar/filtrar por nombre/precio/stock
+- `/orders` — crear orden (elige user/product), listar, filtrar por status/userId, cambiar a PAID/cancelar
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Todo usa `src/lib/api.ts` con `fetch` y `cache: no-store`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy Vercel (1 click)
+
+1. Push a GitHub (ver abajo)
+2. Vercel → New Project → Import `frontend-nextjs-seed` → añade `NEXT_PUBLIC_API_URL` → Deploy
+
+## GitHub
+
+```bash
+git remote -v
+# si es el seed, cámbialo a tu repo:
+git remote set-url origin https://github.com/TU_USUARIO/TU_REPO.git
+git push -u origin main
+```
