@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { usersApi } from "@/lib/api";
+import { usersService } from "@/modules/users/services/usersService";
 
 /**
  * Página Users — CRUD didáctico simple con fetch
@@ -16,7 +16,7 @@ export default function UsersPage() {
     try {
       setLoading(true);
       setErr(null);
-      const data = await usersApi.list();
+      const data = await usersService.getAll();
       setUsers(data);
     } catch (e: any) {
       setErr(e.message);
@@ -29,7 +29,7 @@ export default function UsersPage() {
   async function create(e: React.FormEvent) {
     e.preventDefault();
     try {
-      await usersApi.create({ ...form, age: Number(form.age) });
+      await usersService.create({ ...form, age: Number(form.age) });
       setForm({ id: "", name: "", email: "", age: 20, phone: "" });
       await load();
     } catch (e: any) { alert(e.message); }
@@ -60,7 +60,7 @@ export default function UsersPage() {
             <div className="font-mono text-xs text-slate-500">{u.id}</div>
             <div className="font-semibold">{u.name} <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">active</span></div>
             <div className="text-sm text-slate-600">{u.email} • {u.age} • {u.phone}</div>
-            <button onClick={async()=>{ await usersApi.remove(u.id); await load(); }} className="mt-2 text-xs px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700">Desactivar</button>
+            <button onClick={async()=>{ await usersService.delete(u.id); await load(); }} className="mt-2 text-xs px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700">Desactivar</button>
           </div>
         ))}
       </div>

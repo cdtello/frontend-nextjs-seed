@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ordersApi, productsApi, usersApi } from "@/lib/api";
+import { ordersService } from "@/modules/orders/services/ordersService";
+import { productsService } from "@/modules/products/services/productsService";
+import { usersService } from "@/modules/users/services/usersService";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -13,14 +15,14 @@ export default function OrdersPage() {
     const f: any = {};
     if (filter.status) f.status = filter.status;
     if (filter.userId) f.userId = filter.userId;
-    const data = await ordersApi.list(f);
+    const data = await ordersService.getAll(f);
     setOrders(data);
   }
   async function loadRefs() {
-    setUsers(await usersApi.list());
-    setProducts(await productsApi.list());
+    setUsers(await usersService.getAll());
+    setProducts(await productsService.getAll());
     if (!form.productId) {
-      const prods = await productsApi.list();
+      const prods = await productsService.getAll();
       if (prods[0]) setForm(s=>({ ...s, productId: prods[0].id }));
     }
   }
@@ -28,7 +30,7 @@ export default function OrdersPage() {
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
-    await ordersApi.create({ userId: form.userId, items: [{ productId: form.productId, quantity: Number(form.quantity) }] });
+    await ordersService.create({ userId: form.userId, items: [{ productId: form.productId, quantity: Number(form.quantity) }] });
     await load();
   }
 
@@ -67,9 +69,9 @@ export default function OrdersPage() {
             <div className="text-sm mt-1">User: <b>{o.user?.name || o.userId}</b> • Total: <b>${o.total}</b></div>
             <div className="text-xs text-slate-600 mt-1">{o.items?.map((it:any)=> `${it.product?.name || it.productId} x${it.quantity} @${it.unitPrice}`).join(' • ')}</div>
             <div className="flex gap-2 mt-3">
-              <button onClick={async()=>{ await ordersApi.updateStatus(o.id, 'PAID'); await load(); }} className="text-xs px-3 py-1 rounded-full bg-emerald-600 text-white">Marcar PAID</button>
-              <button onClick={async()=>{ await ordersApi.cancel(o.id); await load(); }} className="text-xs px-3 py-1 rounded-full bg-amber-600 text-white">Cancelar</button>
-              <button onClick={async()=>{ await ordersApi.remove(o.id); await load(); }} className="text-xs px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700">Eliminar</button>
+              <button onClick={async()=>{ await ordersService.updateStatus(o.id, 'PAID'); await load(); }} className="text-xs px-3 py-1 rounded-full bg-emerald-600 text-white">Marcar PAID</button>
+              <button onClick={async()=>{ await ordersService.cancel(o.id); await load(); }} className="text-xs px-3 py-1 rounded-full bg-amber-600 text-white">Cancelar</button>
+              <button onClick={async()=>{ await ordersService.delete(o.id); await load(); }} className="text-xs px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700">Eliminar</button>
             </div>
           </div>
         ))}

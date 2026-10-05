@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { productsApi } from "@/lib/api";
+import { productsService } from "@/modules/products/services/productsService";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -12,14 +12,14 @@ export default function ProductsPage() {
     if (filter.name) f.name = filter.name;
     if (filter.minPrice) f.minPrice = Number(filter.minPrice);
     if (filter.maxPrice) f.maxPrice = Number(filter.maxPrice);
-    const data = await productsApi.list(f);
+    const data = await productsService.getAll(f);
     setProducts(data);
   }
   useEffect(() => { load(); }, []);
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
-    await productsApi.create({ ...form, price: Number(form.price), stock: Number(form.stock) });
+    await productsService.create({ ...form, price: Number(form.price), stock: Number(form.stock) });
     setForm({ name: "", description: "", price: 99, stock: 10 });
     await load();
   }
@@ -51,7 +51,7 @@ export default function ProductsPage() {
             <div className="text-xs font-mono text-slate-500 truncate">{p.id}</div>
             <div className="text-sm mt-1">${p.price} • stock {p.stock}</div>
             <div className="text-xs text-slate-500">{p.description || "—"}</div>
-            <button onClick={async()=>{ await productsApi.remove(p.id); await load(); }} className="mt-2 text-xs px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700">Eliminar</button>
+            <button onClick={async()=>{ await productsService.delete(p.id); await load(); }} className="mt-2 text-xs px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700">Eliminar</button>
           </div>
         ))}
       </div>

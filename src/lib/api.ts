@@ -1,62 +1,63 @@
 /**
- * API helpers — consumo del backend NestJS
- * Env: NEXT_PUBLIC_API_URL (ver .env.example)
- * Todo con fetch nativo, sin librerías raras — didáctico simple.
+ * apiClient — capa base para hablar con el backend NestJS
+ * Usa fetch nativo, sin librerías raras. Didáctico y tipado.
+ * Env: NEXT_PUBLIC_API_URL (http://localhost:3000 por defecto)
  */
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-type FetchOpts = RequestInit & { params?: Record<string, string | number | undefined> };
+export class ApiError extends Error {
+  public status: number;
+  public data: any;
+  constructor(status: number, data: any) {
+    const msg = Array.isArray(data?.message) ? data.message.join(", ") : data?.message || `Error ${status}`;
+    super(msg);
+    this.status = status;
+    this.data = data;
+  }
+}
 
-async function apiFetch(path: string, opts: FetchOpts = {}) {
-  const { params, ...rest } = opts;
+type Params = Record<string, string | number | undefined>;
+
+function buildUrl(path: string, params?: Params) {
   const url = new URL(`${API_URL}${path}`);
   if (params) {
     Object.entries(params).forEach(([k, v]) => {
       if (v !== undefined && v !== "") url.searchParams.set(k, String(v));
     });
   }
-  const res = await fetch(url.toString(), {
-    ...rest,
-    headers: { "Content-Type": "application/json", ...(rest.headers || {}) },
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`${res.status} ${res.statusText} — ${txt.slice(0,500)}`);
-  }
-  if (res.status === 204) return null;
-  return res.json();
+  return url.toString();
 }
 
-// Users
-export const usersApi = {
-  list: () => apiFetch("/users"),
-  get: (id: string) => apiFetch(`/users/${id}`),
-  create: (data: any) => apiFetch("/users", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: string, data: any) => apiFetch(`/users/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-  remove: (id: string) => apiFetch(`/users/${id}`, { method: "DELETE" }),
-};
-
-// Products
-export const productsApi = {
-  list: (filter?: { name?: string; minPrice?: number; maxPrice?: number; minStock?: number; maxStock?: number }) =>
-    apiFetch("/products", { params: filter as any }),
-  get: (id: string) => apiFetch(`/products/${id}`),
-  create: (data: any) => apiFetch("/products", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: string, data: any) => apiFetch(`/products/${id}`, { method: "PUT", body: JSON.stringify(data) }),
-  remove: (id: string) => apiFetch(`/products/${id}`, { method: "DELETE" }),
-};
-
-// Orders
-export const ordersApi = {
-  list: (filter?: { status?: string; userId?: string }) => apiFetch("/orders", { params: filter as any }),
-  get: (id: string) => apiFetch(`/orders/${id}`),
-  listByUser: (userId: string) => apiFetch(`/orders/user/${userId}`),
-  create: (data: any) => apiFetch("/orders", { method: "POST", body: JSON.stringify(data) }),
-  updateStatus: (id: string, status: string) => apiFetch(`/orders/${id}`, { method: "PUT", body: JSON.stringify({ status }) }),
-  cancel: (id: string) => apiFetch(`/orders/${id}/cancel`, { method: "PUT" }),
-  remove: (id: string) => apiFetch(`/orders/${id}`, { method: "DELETE" }),
+export const apiClient = {
+  async get<T>(path: string, params?: Params): Promise<T> {
+    const res = await fetch(buildUrl(path, params), { cache: "no-store" });
+    if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => ({ message: res.statusText })));
+    return res.json();
+  },
+  async post<T>(path: string, data: unknown): Promise<T> {
+    const res = await fetch(buildUrl(path), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => ({ message: res.statusText })));
+    return res.json();
+  },
+  async put<T>(path: string, data: unknown): Promise<T> {
+    const res = await fetch(buildUrl(path), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => ({ message: res.statusText })));
+    return res.json();
+  },
+  async delete<T>(path: string): Promise<T> {
+    const res = await fetch(buildUrl(path), { method: "DELETE" });
+    if (!res.ok) throw new ApiError(res.status, await res.json().catch(() => ({ message: res.statusText })));
+    return res.json().catch(() => undefined as T);
+  },
 };
 
 export { API_URL };
