@@ -20,8 +20,8 @@ export default function Nav() {
             href={l.href}
             className={`px-4 py-2 rounded-full text-sm font-medium transition border ${
               active
-                ? "bg-slate-900 text-white border-slate-900 shadow"
-                : "bg-white border-black/10 hover:bg-slate-50"
+                ? "bg-amber-300 text-slate-950 border-amber-300 shadow-sm"
+                : "bg-white/5 text-slate-100 border-white/10 hover:bg-white/12 hover:border-white/20"
             }`}
           >
             {l.label}
